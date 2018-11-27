@@ -66,9 +66,6 @@ module.exports = (env, options) => ({
       $               : 'jquery',
       jQuery          : 'jquery',
       'window.jQuery' : 'jquery',
-      Popper          : ['popper.js', 'default'],
-      Util            : 'exports-loader?Util!bootstrap/js/dist/util',
-      Dropdown        : 'exports-loader?Dropdown!bootstrap/js/dist/dropdown',
     }),
   ],
   output    : {

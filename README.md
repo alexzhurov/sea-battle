@@ -1,13 +1,11 @@
 
-<h2 align="center">webpack-sass-bootstrap-boilerplate</h2>
+<h2 align="center">webpack-sass-boilerplate</h2>
 
 <p align="center">
-  <a href="https://github.com/shaminmeerankutty/webpack-sass-bootstrap-boilerplate/blob/master/LICENSE.md">
+  <a href="https://github.com/shaminmeerankutty/webpack-sass-boilerplate/blob/master/LICENSE.md">
     <img alt="License" src="https://img.shields.io/github/license/mashape/apistatus.svg"></a>
   <a href="https://webpack.js.org">
     <img alt="Webpack" src="https://img.shields.io/badge/webpack-v4.25.1-0072b8.svg"></a>
-  <a href="http://getbootstrap.com/">
-    <img alt="Bootstrap" src="https://img.shields.io/badge/Bootstrap-v4.1.3-563d7c.svg"></a>
   <a href="https://sass-lang.com">
     <img alt="Sass" src="https://img.shields.io/badge/node--sass-v4.10.0-df5a9c.svg"></a>
   <a href="https://jquery.com/">
@@ -20,7 +18,6 @@
   <em>
   Sass
   · Babel
-  · Bootstrap
   · Webpack
   · Webpack Dev Server
   · jQuery 3.3.1
@@ -28,7 +25,7 @@
   </em>
 </p>
 
-This Webpack Sass Bootstrap boilerplate starter contains the features and scripts you need
+This Webpack Sass boilerplate starter contains the features and scripts you need
 to get started quickly with Webpack bundling and building, Live Loading, and creating a dev server.
 
 It contains the following features:
@@ -36,7 +33,6 @@ It contains the following features:
 - Webpack 4 bundling
 - Babel ES6 Compiler
 - Sass Compiler
-- Bootstrap v4
 - jQuery 3.3.1
 - Popper.js 
 - Webpack Dev Server
@@ -62,7 +58,7 @@ The following webpack plugins are also included:
 * Extract Text Plugin for extracting CSS files
 * Clean Webpack Plugin for cleaning unwanted files in dist directory
 * HTML Webpack Plugin for generating HTML files
-* Webpack Provider Plugin for providing jQuery & popper js to Bootstrap
+* Webpack Provider Plugin for providing jQuery 
 * Glob for matching HTML files
 
 ## Getting Started
