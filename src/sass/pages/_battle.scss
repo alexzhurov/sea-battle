@@ -1,0 +1,66 @@
+////////////////////////////////
+// description
+////////////////////////////////
+.description {
+  & > div {
+    width      : 49%;
+    display    : inline-block;
+    text-align : center;
+  }
+  .description-user {
+  }
+  .description-enemy {
+  }
+}
+
+////////////////////////////////
+// battlefield
+////////////////////////////////
+.battlefield-table {
+  margin          : 0;
+  border-collapse : collapse;
+  cursor          : default;
+  display         : inline-block;
+  position        : relative;
+}
+
+.battlefield-gap {
+  display  : inline-block;
+  position : relative;
+  margin   : 40px 0;
+  &.battlefield-self {
+    margin-left : 130px;
+  }
+}
+
+.battlefield-row {
+
+  .battlefield-cell {
+    border  : 1px solid #86868e;
+    padding : 0;
+    .battlefield-cell-content {
+      position : relative;
+      height   : 2em;
+      width    : 2em;
+    }
+  }
+}
+
+.marker {
+  position  : absolute;
+  font-size : 11px;
+  z-index   : -1;
+  &.marker__row {
+    left       : -3em;
+    width      : 2em;
+    text-align : right;
+    top        : 1em;
+    height     : 1em;
+  }
+  &.marker__col {
+    top        : -2em;
+    left       : 0;
+    width      : 100%;
+    text-align : center;
+  }
+}
