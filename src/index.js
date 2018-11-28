@@ -90,7 +90,7 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created        : function () {
+    created    : function () {
       $('#computer_field > tbody').on('click', function (e) {
         model.shot(e)
       })
@@ -104,7 +104,27 @@ $(function () {
       view.renderField('user')
       view.renderField('computer')
     },
-    createShip     : function (len, owner) {
+    shot       : function (e, owner) {
+      var target = $(e.target).data()
+      if (!target.hasOwnProperty('x')) return // если координат нет
+      var fieldCell = store.fields.user[target.y][target.x]
+
+      switch (fieldCell) {
+        case 0: // пустая ячейка
+          fieldCell = 3
+          break
+        case 1: // есть корабль
+          fieldCell = 2
+          break
+        case 2: // корабль подстрелен
+        case 3: // пустая простреленная
+          return
+      }
+
+      store.fields.user[target.y][target.x] = fieldCell
+      view.renderField('user')
+    },
+    createShip : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
