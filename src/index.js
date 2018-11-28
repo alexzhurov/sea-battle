@@ -136,44 +136,38 @@ $(function () {
       // если х корабля = 0, значит корабль примыкает к левому краю поля
       // и значит х площади, тоже начинается с нуля
       fromX = (ship.x === 0) ? ship.x : ship.x - 1
-      // если корабль расположен  вертикально
-      // и конец корабля примыкает к нижнему краю
-      // и значит toX площади, тоже заканчивается координатой конца корабля
-      if (ship.x + ship.len === 10 && ship.isVertical) {
-        toX = ship.x + ship.len
+      // если корабль расположен вертикально
+      if (ship.isVertical) {
+        // и примыкает к правой границе
+        if (ship.x === 9) toX = ship.x
+        else toX = ship.x + 1
       }
-      // если корабль расположен  вертикально
-      // и конец корабля НЕ примыкает к нижнему краю
-      // тогда toX площади примыкает, больше координаты конца корабля на 1
-      else if (ship.x + ship.len < 10 && ship.isVertical) {
-        toX = ship.x + ship.len + 1
+      // если корабль расположен горизонтально
+      else {
+        // и примыкает к правой границе
+        if (ship.x + ship.len === 10) toX = 9
+        else toX = ship.x + ship.len
       }
-      // если корабль расположен  горизонтально вдоль нижней границы поля
-      else if (ship.x === 9 && !ship.isVertical) {
-        toX = ship.x + 1
-      }
-      // если корабль расположен  горизонтально
-      // и не примыкает к краю поля
-      else if (ship.x < 9 && !ship.isVertical) {
-        toX = ship.x + 2
-      }
-      // задаём начальную и конечну Y координату площади
+      // задаём начальную и конечную Y координату площади
       fromY = (ship.y === 0) ? ship.y : ship.y - 1
-      if (ship.y + ship.len === 10 && !ship.isVertical) {
-        toY = ship.y + ship.len
-      } else if (ship.y + ship.len < 10 && !ship.isVertical) {
-        toY = ship.y + ship.len + 1
-      } else if (ship.y === 9 && ship.isVertical) {
-        toY = ship.y + 1
-      } else if (ship.y < 9 && ship.isVertical) {
-        toY = ship.y + 2
+      // если корабль расположен вертикально
+      if (ship.isVertical) {
+        // и примыкает к нижней границе
+        if (ship.y + ship.len === 10) toY = 9
+        else toY = ship.y + ship.len
+      }
+      // если корабль расположен горизонтально
+      else {
+        // и примыкает к нижней границе
+        if (ship.y === 9) toY = ship.y
+        else toY = ship.y + 1
       }
 
       // запускаем циклы и проверяем координаты площади
       // если значение равно 1му, значит ячейка занята
-      for (var i = fromX; i < toX; i++) {
-        for (var j = fromY; j < toY; j++) {
-          if (store.fields[ship.owner][i][j] === 1) return false
+      for (var i = fromX; i <= toX; i++) {
+        for (var j = fromY; j <= toY; j++) {
+          if (store.fields[ship.owner][j][i] === 1) return false
         }
       }
       return true
