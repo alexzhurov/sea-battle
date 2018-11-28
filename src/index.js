@@ -1,8 +1,5 @@
 import './sass/main.scss'
 
-/*////////////////////////////////////////////
-////
-*/////////////////////////////////////////////
 $(function () {
   /*////////////////////////////////////////////
   //// store
@@ -10,30 +7,83 @@ $(function () {
   var store = {
     userName  : '',
     enemyName : '',
-    phase     : 'start', // start, combat, result
     step      : 1,
-    ships     : [],
-    fields    : {},
+    fields    : {
+      user     : null,
+      computer : null,
+    },
+    series    : [ // стандартный набор кораблей
+      { size : 4, amount : 1 },
+      { size : 3, amount : 2 },
+      { size : 2, amount : 3 },
+      { size : 1, amount : 4 },
+    ],
+    caption   : {
+      axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
+      axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    },
   }
 
   /*////////////////////////////////////////////
   //// View
   */////////////////////////////////////////////
   var view = {
-    showPlayer : function () {
+    showPlayer  : function () {
       // get players names
       store.userName = $('#user_name_input').val()
       store.enemyName = $('#enemy_name_input').val()
     },
-    showStep   : function () {
+    showStep    : function () {
       //render step info
       $('#step_number').html('Ход - ' + store.step)
       $('#step_owner').html('Ходит - ' + store.userName)
     },
-    startFight : function () {
-      store.phase = 'combat'
+    startFight  : function () {
       $('#screen_start').toggleClass('hidden')
       $('#screen_combat').toggleClass('hidden')
+    },
+    renderField : function (owner) {
+      var table = $('#' + owner + '_field > tbody')
+      table.html('')// clear field on init
+
+
+      for (var i = 0; i < 10; i++) {// счётчик для Y координаты
+        var row = '<tr class="battlefield-row">'
+        for (var j = 0; j < 10; j++) {// счётчик для X координаты
+          var captionX  = '',
+              captionY  = '',
+              cellState = ''
+          // Добавить подписи для осей
+          if (i === 0) captionX = '<div class="marker marker__col">' + store.caption.axisX[j] + '</div>'
+          if (j === 0) captionY = '<div class="marker marker__row">' + store.caption.axisY[i] + '</div>'
+          // если 0 - пустая ячейка
+          // если 1 - есть корабль
+          // если 2 - корабль подстрелен
+          // если 3 - пустая простреленная
+          switch (store.fields.user[i][j]) {
+            case 1:
+              cellState = 'deck'
+              break
+            case 2:
+              cellState = 'deck hit'
+              break
+            case 3:
+              cellState = 'hit'
+              break
+          }
+
+          // Отрендерить строку
+          row += '<td class="battlefield-cell ' + cellState + '">' +
+            '<div class="battlefield-cell-content" data-y="' + i + '" data-x="' + j + '">' +
+            captionX +
+            captionY +
+            '</div>' +
+            '</td>'
+        }
+        row += '</tr>'
+        table.append(row)
+      }
+
     },
   }
   /*////////////////////////////////////////////
