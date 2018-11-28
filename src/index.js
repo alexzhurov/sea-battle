@@ -90,8 +90,19 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    shot           : function () {
+    created        : function () {
+      $('#computer_field > tbody').on('click', function (e) {
+        model.shot(e)
+      })
 
+      model.createField('user')
+      model.createField('computer')
+
+      model.createNavy('user')
+      model.createNavy('computer')
+
+      view.renderField('user')
+      view.renderField('computer')
     },
     createShip     : function (len, owner) {
       var ship = {}
