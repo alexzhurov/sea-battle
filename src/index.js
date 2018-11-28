@@ -123,12 +123,9 @@ $(function () {
       // нет ли в полученных координатах или соседних клетках ранее
       // созданных кораблей
       var isValid = this.checkShipCoord(ship)
-      console.log('isValid: ', isValid)
-      console.log('ship: ', ship)
 
       // если координаты повторяются, снова запускаем функцию
       if (!isValid) return this.createShip(len, owner)
-      store.ships.push(ship)
       this.locateShip(ship)
     },
     checkShipCoord : function (ship) {
@@ -136,7 +133,7 @@ $(function () {
       // проверяем начальную позицию
 
       // задаём начальную и конечную координаты площади занимаемую кораблём
-      // если х корабля = 0, значит корабль примыкает к верхнему краю поля
+      // если х корабля = 0, значит корабль примыкает к левому краю поля
       // и значит х площади, тоже начинается с нуля
       fromX = (ship.x === 0) ? ship.x : ship.x - 1
       // если корабль расположен  вертикально
@@ -192,7 +189,6 @@ $(function () {
         }
       }
       store.fields[ship.owner] = field
-
     },
 
     createField : function (owner) {
@@ -215,16 +211,6 @@ $(function () {
     return Math.floor(Math.random() * (n + 1))
   }
 
-  model.createField('user')
-  model.createShip(4, 'user')
-  model.createShip(3, 'user')
-  model.createShip(3, 'user')
-  model.createShip(2, 'user')
-  model.createShip(2, 'user')
-  model.createShip(2, 'user')
-
-  console.log('state.fields.user: ', store.fields.user)
-  console.log('state.ships: ', store.ships)
 
   $('#start_form').submit(function (event) {
     event.preventDefault()
