@@ -16,6 +16,14 @@
 ////////////////////////////////
 // battlefield
 ////////////////////////////////
+.battlefield-gap {
+  display    : inline-block;
+  position   : relative;
+  margin     : 40px 0;
+  width      : 49%;
+  text-align : center;
+}
+
 .battlefield-table {
   margin          : 0;
   border-collapse : collapse;
@@ -24,19 +32,10 @@
   position        : relative;
 }
 
-.battlefield-gap {
-  display  : inline-block;
-  position : relative;
-  margin   : 40px 0;
-  &.battlefield-self {
-    margin-left : 130px;
-  }
-}
-
 .battlefield-row {
 
   .battlefield-cell {
-    border  : 1px solid #86868e;
+    border  : 2px solid #ababb4;
     padding : 0;
     .battlefield-cell-content {
       position   : relative;
@@ -46,7 +45,6 @@
     }
     // карма корабля
     &.deck {
-      border : 0;
       .battlefield-cell-content {
         border : 2px solid #000000;
       }
@@ -60,7 +58,6 @@
     }
     // попадение в пусту ячейку
     &.hit:not(.deck) {
-      border : 0;
       .battlefield-cell-content {
         background-color : #6193ff;
         opacity          : 0.7;
