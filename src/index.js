@@ -113,7 +113,7 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created       : function () {
+    created          : function () {
       // Запускается при инициализации приложения
 
       // Добавить выстрел при клике по полю врага
@@ -130,7 +130,7 @@ $(function () {
       view.renderField('user')
       view.renderField('computer')
     },
-    shot          : function (e, owner) {
+    shot             : function (e, owner) {
       // Не стерлять пока не походит соперник
       if (store.step.owner !== owner) return
       // Задать в чьё поле будет выстрел
@@ -173,7 +173,7 @@ $(function () {
       // Если попал в корабль
       // то проверить жив ли он
       // если мертв то закрасить ближайшие клетки
-      if (fieldCell === 2) model.hideDrownShip(target, owner, targetName)
+      if (fieldCell === 2) model.hideDrownShip(owner, targetName)
       view.renderField(targetName)
       // Передать право хода сопернику
       store.step.owner = targetName
@@ -188,7 +188,7 @@ $(function () {
       model.checkResult()
 
     },
-    createShip    : function (len, owner) {
+    createShip       : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
@@ -224,32 +224,24 @@ $(function () {
       this.locateShip(ship)
       store.ships[owner].push(ship)
     },
-    hideDrownShip : function (target, owner, targetName) {
+    hideDrownShip    : function (owner, targetName) {
       // Нужно найти корабль с потопленым бортом
       // Пройти по массиву кораблей
       for (var i = 0; i < store.ships[targetName].length; i++) {
-        var isHurt   = false,
-            drownLen = 0,
+        var drownLen = 0,
             ship     = store.ships[targetName][i]
         // Пройти по бортам выбранного корабля
         for (var j = 0; j < ship.decks.length; j++) {
           var deck = ship.decks[j]
-          // если корабль ранен, вернуться и посчитать количество потопленный бортов
-          if (deck.x === target.x && deck.y === target.y) {
-            isHurt = true
-            break
-          }
+          // если корабль ранен и посчитать количество потопленных бортов
+          if (store.fields[targetName][deck.y][deck.x] === 2) drownLen++
         }
 
-        if (!isHurt) return
         // Если длина корабля равна количеству потопленных бортов
         // значит корабль утонул
-        for (var k = 0; k < ship.decks.length; k++) {
-          var hurtedShipDeck = ship.decks[k]
-          if (store.fields[targetName][hurtedShipDeck.y][hurtedShipDeck.x] === 2) drownLen++
-        }
 
-        if (drownLen !== ship.len) return
+        if (drownLen !== ship.len) continue
+
         // Если корабль утонул
         // отметить границу занятой им зоны
         var square = model.createShipSquare(ship)
@@ -328,7 +320,7 @@ $(function () {
       }
       store.fields[ship.owner] = field
     },
-    createNavy    : function (owner) {
+    createNavy       : function (owner) {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
@@ -339,7 +331,7 @@ $(function () {
         }
       }
     },
-    createField   : function (owner) {
+    createField      : function (owner) {
       var x = 10, y = 10, arr = [10]
       for (var i = 0; i < x; i++) {
         arr[i] = [10]
@@ -349,7 +341,7 @@ $(function () {
       }
       store.fields[owner] = arr
     },
-    checkResult   : function () {
+    checkResult      : function () {
       if (store.result.user === 0) {
         store.result.winner = store.computerName
         view.finishFight()
