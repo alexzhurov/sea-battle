@@ -7,26 +7,24 @@ $(function () {
   var store = {
     userName     : null,
     computerName : null,
-    step    : {
+    step         : {
       number : 1,
     },
-    fields  : {
+    fields       : {
       user     : null,
       computer : null,
     },
-    series  : [ // Стандартный набор кораблей
+    series       : [ // Стандартный набор кораблей
       { len : 4, amount : 1 },
       { len : 3, amount : 2 },
       { len : 2, amount : 3 },
       { len : 1, amount : 4 },
     ],
-    caption : {
-      // axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
-      // axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
-      axisX : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
-      axisY : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    caption      : {
+      axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
+      axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
     },
-    result  : {
+    result       : {
       user     : null,
       computer : null,
       winner   : null,
@@ -125,7 +123,7 @@ $(function () {
       view.renderField('computer')
     },
 
-    shot        : function (e, owner) {
+    shot           : function (e, owner) {
       var targetName = (owner === 'user') ? 'computer' : 'user'
 
       var target
@@ -168,7 +166,7 @@ $(function () {
       console.log('store: ', store)
 
     },
-    createShip  : function (len, owner) {
+    createShip     : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
@@ -248,7 +246,7 @@ $(function () {
       }
       store.fields[ship.owner] = field
     },
-    createNavy  : function (owner) {
+    createNavy     : function (owner) {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
@@ -259,7 +257,7 @@ $(function () {
         }
       }
     },
-    createField : function (owner) {
+    createField    : function (owner) {
       var x = 10, y = 10, arr = [10]
       for (var i = 0; i < x; i++) {
         arr[i] = [10]
@@ -269,7 +267,7 @@ $(function () {
       }
       store.fields[owner] = arr
     },
-    checkResult : function () {
+    checkResult    : function () {
       if (store.result.user === 0) {
         store.result.winner = store.userName
         view.finishFight()
