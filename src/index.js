@@ -2,25 +2,29 @@ import './sass/main.scss'
 
 $(function () {
   /*////////////////////////////////////////////
-  //// store
+  //// Store
   */////////////////////////////////////////////
   var store = {
-    userName  : '',
-    enemyName : '',
-    step      : 1,
-    fields    : {
+    userName     : null,
+    computerName : null,
+    step         : {
+      number : 1,
+    },
+    fields       : {
       user     : null,
       computer : null,
     },
-    series    : [ // стандартный набор кораблей
-      { size : 4, amount : 1 },
-      { size : 3, amount : 2 },
-      { size : 2, amount : 3 },
-      { size : 1, amount : 4 },
+    series       : [ // Стандартный набор кораблей
+      { len : 4, amount : 1 },
+      { len : 3, amount : 2 },
+      { len : 2, amount : 3 },
+      { len : 1, amount : 4 },
     ],
-    caption   : {
-      axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
-      axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+    caption      : {
+      // axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
+      // axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
+      axisX : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+      axisY : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
     },
   }
 
@@ -29,14 +33,17 @@ $(function () {
   */////////////////////////////////////////////
   var view = {
     showPlayer  : function () {
-      // get players names
+      // Get players names
       store.userName = $('#user_name_input').val()
-      store.enemyName = $('#enemy_name_input').val()
+      store.computerName = $('#enemy_name_input').val()
     },
-    showStep    : function () {
-      //render step info
-      $('#step_number').html('Ход - ' + store.step)
-      $('#step_owner').html('Ходит - ' + store.userName)
+    showStep    : function (owner) {
+      var ownerName
+      // Render step info
+      $('#step_number').html('Ход - ' + store.step.number)
+      $('#step_owner').html('Ходит - ' + store[owner + 'Name'])
+
+      store.step.number++
     },
     startFight  : function () {
       $('#screen_start').toggleClass('hidden')
@@ -44,12 +51,12 @@ $(function () {
     },
     renderField : function (owner) {
       var table = $('#' + owner + '_field > tbody')
-      table.html('')// clear field on init
+      table.html('')// Сlear field on init
 
 
-      for (var i = 0; i < 10; i++) {// счётчик для Y координаты
+      for (var i = 0; i < 10; i++) {// Cчётчик для Y координаты
         var row = '<tr class="battlefield-row">'
-        for (var j = 0; j < 10; j++) {// счётчик для X координаты
+        for (var j = 0; j < 10; j++) {// Cчётчик для X координаты
           var captionX  = '',
               captionY  = '',
               cellState = ''
@@ -60,9 +67,12 @@ $(function () {
           // если 1 - есть корабль
           // если 2 - корабль подстрелен
           // если 3 - пустая простреленная
-          switch (store.fields.user[i][j]) {
+          switch (store.fields[owner][i][j]) {
             case 1:
-              cellState = 'deck'
+              // если отображается доска игрока то показать корабли
+              if (owner === 'user') {
+                cellState = 'deck'
+              }
               break
             case 2:
               cellState = 'deck hit'
@@ -142,13 +152,13 @@ $(function () {
 
       view.showStep(targetField)
     },
-    createShip : function (len, owner) {
+    createShip     : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
       ship.len = len
       ship.isVertical = getRandom(1)
-      // generate ship position
+      // Generate ship position
       if (ship.isVertical) {
         ship.x = getRandom(9)
         ship.y = getRandom(10 - len)
@@ -157,51 +167,51 @@ $(function () {
         ship.y = getRandom(9)
       }
 
-      // проверяем валидность координат всех палуб корабля:
+      // Проверяем валидность координат всех палуб корабля:
       // нет ли в полученных координатах или соседних клетках ранее
       // созданных кораблей
       var isValid = this.checkShipCoord(ship)
 
-      // если координаты повторяются, снова запускаем функцию
+      // Если координаты повторяются, снова запускаем функцию
       if (!isValid) return this.createShip(len, owner)
       this.locateShip(ship)
     },
     checkShipCoord : function (ship) {
       var fromX, toX, fromY, toY
-      // проверяем начальную позицию
+      // Проверяем начальную позицию
 
-      // задаём начальную и конечную координаты площади занимаемую кораблём
+      // Задаём начальную и конечную координаты площади занимаемую кораблём
       // если х корабля = 0, значит корабль примыкает к левому краю поля
       // и значит х площади, тоже начинается с нуля
       fromX = (ship.x === 0) ? ship.x : ship.x - 1
-      // если корабль расположен вертикально
+      // Если корабль расположен вертикально
       if (ship.isVertical) {
         // и примыкает к правой границе
         if (ship.x === 9) toX = ship.x
         else toX = ship.x + 1
       }
-      // если корабль расположен горизонтально
+      // Если корабль расположен горизонтально
       else {
         // и примыкает к правой границе
         if (ship.x + ship.len === 10) toX = 9
         else toX = ship.x + ship.len
       }
-      // задаём начальную и конечную Y координату площади
+      // Задаём начальную и конечную Y координату площади
       fromY = (ship.y === 0) ? ship.y : ship.y - 1
-      // если корабль расположен вертикально
+      // Если корабль расположен вертикально
       if (ship.isVertical) {
         // и примыкает к нижней границе
         if (ship.y + ship.len === 10) toY = 9
         else toY = ship.y + ship.len
       }
-      // если корабль расположен горизонтально
+      // Если корабль расположен горизонтально
       else {
         // и примыкает к нижней границе
         if (ship.y === 9) toY = ship.y
         else toY = ship.y + 1
       }
 
-      // запускаем циклы и проверяем координаты площади
+      // Запускаем циклы и проверяем координаты площади
       // если значение равно 1му, значит ячейка занята
       for (var i = fromX; i <= toX; i++) {
         for (var j = fromY; j <= toY; j++) {
@@ -226,7 +236,10 @@ $(function () {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
-          model.createShip(serie.size, owner)
+          // Создать корабль
+          model.createShip(serie.len, owner)
+          // Установить начальное количество живых частей кораблей
+          store.result[owner] += serie.len
         }
       }
     },
@@ -253,14 +266,16 @@ $(function () {
 
   $('#start_form').submit(function (event) {
     event.preventDefault()
-    // get players names
+    // Get players names
     store.userName = $('#user_name_input').val()
-    store.enemyName = $('#enemy_name_input').val()
-    //render players names
+    store.computerName = $('#enemy_name_input').val()
+    // Render players names
     $('.description-user').html('Игрок - ' + store.userName)
-    $('.description-enemy').html('Противник - ' + store.enemyName)
+    $('.description-enemy').html('Противник - ' + store.computerName)
     view.startFight()
     model.created()
+    view.showStep('user')
+    console.log('store.result: ', store.result)
 
   })
 })
