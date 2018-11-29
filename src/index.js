@@ -194,7 +194,8 @@ $(function () {
       ship.owner = owner
       ship.len = len
       ship.isVertical = getRandom(1)
-      // Generate ship position
+      ship.decks = []
+      // Сгенерировать позицию корабля
       if (ship.isVertical) {
         ship.x = getRandom(9)
         ship.y = getRandom(10 - len)
@@ -202,7 +203,18 @@ $(function () {
         ship.x = getRandom(10 - len)
         ship.y = getRandom(9)
       }
-
+      // Записать клетки бортов корабля
+      for (var i = 0; i < ship.len; i++) {
+        var deck = {}
+        if (ship.isVertical) {
+          deck.x = ship.x
+          deck.y = ship.y + i
+        } else {
+          deck.x = ship.x + i
+          deck.y = ship.y
+        }
+        ship.decks.push(deck)
+      }
       // Проверяем валидность координат всех палуб корабля:
       // нет ли в полученных координатах или соседних клетках ранее
       // созданных кораблей
