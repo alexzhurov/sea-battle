@@ -18,6 +18,10 @@ $(function () {
       { len : 2, amount : 3 },
       { len : 1, amount : 4 },
     ],
+    ships        : {
+      user     : [],
+      computer : [],
+    },
     caption      : {
       axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
       axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
@@ -199,6 +203,46 @@ $(function () {
       // Если координаты повторяются, снова запускаем функцию
       if (!isValid) return this.createShip(len, owner)
       this.locateShip(ship)
+      store.ships[owner].push(ship)
+    },
+    hideDrownShip    : function (target, owner, targetName) {
+      // Нужно найти корабль с потопленым бортом
+      // Пройти по массиву кораблей
+      for (var i = 0; i < store.ships[targetName].length; i++) {
+        var isHurt   = false,
+            drownLen = 0,
+            ship     = store.ships[targetName][i]
+        // Пройти по бортам выбранного корабля
+        for (var j = 0; j < ship.decks.length; j++) {
+          var deck = ship.decks[j]
+          // если корабль ранен, вернуться и посчитать количество потопленный бортов
+          if (deck.x === target.x && deck.y === target.y) {
+            isHurt = true
+            break
+          }
+        }
+
+        if (!isHurt) return
+        // Если длина корабля равна количеству потопленных бортов
+        // значит корабль утонул
+        for (var k = 0; k < ship.decks.length; k++) {
+          var hurtedShipDeck = ship.decks[k]
+          if (store.fields[targetName][hurtedShipDeck.y][hurtedShipDeck.x] === 2) drownLen++
+        }
+
+        if (drownLen !== ship.len) return
+        // Если корабль утонул
+        // отметить границу занятой им зоны
+        var square = model.createShipSquare(ship)
+
+        // пройтись по границе и не простреленные ячейки
+        // пометить как простреленные
+        for (var n = square.fromX; n <= square.toX; n++) {
+          for (var m = square.fromY; m <= square.toY; m++) {
+            if (store.fields[ship.owner][m][n] === 0) store.fields[targetName][m][n] = 3
+          }
+        }
+      }
     },
     checkShipCoord   : function (ship) {
       var square = model.createShipSquare(ship)
