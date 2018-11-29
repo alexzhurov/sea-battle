@@ -113,7 +113,7 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created          : function () {
+    created       : function () {
       // Запускается при инициализации приложения
 
       // Добавить выстрел при клике по полю врага
@@ -130,7 +130,9 @@ $(function () {
       view.renderField('user')
       view.renderField('computer')
     },
-    shot           : function (e, owner) {
+    shot          : function (e, owner) {
+      // Не стерлять пока не походит соперник
+      if (store.step.owner !== owner) return
       // Задать в чьё поле будет выстрел
       var targetName = (owner === 'user') ? 'computer' : 'user'
 
@@ -171,17 +173,22 @@ $(function () {
       // Если попал в корабль
       // то проверить жив ли он
       // если мертв то закрасить ближайшие клетки
-      if (fieldCell === 1) model.hideDrownShip(target, owner, targetName)
+      if (fieldCell === 2) model.hideDrownShip(target, owner, targetName)
       view.renderField(targetName)
-
+      // Передать право хода сопернику
+      store.step.owner = targetName
       // Произвести ход соперника
-      if (owner === 'user') model.shot(null, 'computer')
+      if (owner === 'user') {
+        setTimeout(function () {
+          model.shot(null, 'computer')
+        }, getRandom(1000))
+      }
 
       view.showStep(targetName)
       model.checkResult()
 
     },
-    createShip       : function (len, owner) {
+    createShip    : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
@@ -205,7 +212,7 @@ $(function () {
       this.locateShip(ship)
       store.ships[owner].push(ship)
     },
-    hideDrownShip    : function (target, owner, targetName) {
+    hideDrownShip : function (target, owner, targetName) {
       // Нужно найти корабль с потопленым бортом
       // Пройти по массиву кораблей
       for (var i = 0; i < store.ships[targetName].length; i++) {
@@ -309,7 +316,7 @@ $(function () {
       }
       store.fields[ship.owner] = field
     },
-    createNavy       : function (owner) {
+    createNavy    : function (owner) {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
@@ -320,7 +327,7 @@ $(function () {
         }
       }
     },
-    createField      : function (owner) {
+    createField   : function (owner) {
       var x = 10, y = 10, arr = [10]
       for (var i = 0; i < x; i++) {
         arr[i] = [10]
@@ -330,7 +337,7 @@ $(function () {
       }
       store.fields[owner] = arr
     },
-    checkResult      : function () {
+    checkResult   : function () {
       if (store.result.user === 0) {
         store.result.winner = store.userName
         view.finishFight()
