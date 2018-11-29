@@ -90,9 +90,10 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created    : function () {
+    created : function () {
       $('#computer_field > tbody').on('click', function (e) {
-        model.shot(e)
+        model.shot(e, 'user')
+        model.shot(null, 'computer')
       })
 
       model.createField('user')
@@ -104,25 +105,42 @@ $(function () {
       view.renderField('user')
       view.renderField('computer')
     },
-    shot       : function (e, owner) {
-      var target = $(e.target).data()
-      if (!target.hasOwnProperty('x')) return // если координат нет
-      var fieldCell = store.fields.user[target.y][target.x]
+
+    shot           : function (e, owner) {
+      var targetField = (owner === 'user') ? 'computer' : 'user'
+
+      var target
+      if (owner === 'user') {
+        target = $(e.target).data()
+        if (!target.hasOwnProperty('x')) return // если координат нет
+      } else {
+        target = {
+          x : getRandom(9),
+          y : getRandom(9),
+        }
+      }
+
+      var fieldCell = store.fields[targetField][target.y][target.x]
 
       switch (fieldCell) {
-        case 0: // пустая ячейка
+        case 0: // Пустая ячейка
           fieldCell = 3
           break
-        case 1: // есть корабль
+        case 1: // Есть корабль
           fieldCell = 2
           break
-        case 2: // корабль подстрелен
-        case 3: // пустая простреленная
+        case 2: // Корабль подстрелен
+        case 3: // Пустая простреленная
+          // Если компьютер попал в подстреленную ячейку,
+          // То стреляет ещё раз
+          if (owner !== 'user') model.shot(null, 'computer')
           return
       }
 
-      store.fields.user[target.y][target.x] = fieldCell
-      view.renderField('user')
+      store.fields[targetField][target.y][target.x] = fieldCell
+      view.renderField(targetField)
+
+      view.showStep(targetField)
     },
     createShip : function (len, owner) {
       var ship = {}
