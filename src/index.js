@@ -6,6 +6,7 @@ $(function () {
     userName     : null,
     computerName : null,
     step         : {
+      owner  : 'user', // for the first step
       number : 1,
     },
     fields       : {
@@ -44,7 +45,6 @@ $(function () {
     },
     showStep    : function (owner) {
       // Отобразить описание ходов битвы
-      var ownerName
       $('#step_number').html('Ход - ' + store.step.number)
       $('#step_owner').html('Ходит - ' + store[owner + 'Name'])
 
@@ -113,7 +113,7 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created        : function () {
+    created          : function () {
       // Запускается при инициализации приложения
 
       // Добавить выстрел при клике по полю врага
@@ -181,7 +181,7 @@ $(function () {
       model.checkResult()
 
     },
-    createShip     : function (len, owner) {
+    createShip       : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
@@ -309,7 +309,7 @@ $(function () {
       }
       store.fields[ship.owner] = field
     },
-    createNavy     : function (owner) {
+    createNavy       : function (owner) {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
@@ -320,7 +320,7 @@ $(function () {
         }
       }
     },
-    createField    : function (owner) {
+    createField      : function (owner) {
       var x = 10, y = 10, arr = [10]
       for (var i = 0; i < x; i++) {
         arr[i] = [10]
@@ -330,7 +330,7 @@ $(function () {
       }
       store.fields[owner] = arr
     },
-    checkResult    : function () {
+    checkResult      : function () {
       if (store.result.user === 0) {
         store.result.winner = store.userName
         view.finishFight()
@@ -361,7 +361,6 @@ $(function () {
     view.startFight()
     model.created()
     view.showStep('user')
-    console.log('store.result: ', store.result)
 
   })
 })
