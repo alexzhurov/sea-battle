@@ -200,8 +200,20 @@ $(function () {
       if (!isValid) return this.createShip(len, owner)
       this.locateShip(ship)
     },
-    checkShipCoord : function (ship) {
+    checkShipCoord   : function (ship) {
+      var square = model.createShipSquare(ship)
+      // Запускаем циклы и проверяем координаты площади
+      // если значение равно 1му, значит ячейка занята
+      for (var i = square.fromX; i <= square.toX; i++) {
+        for (var j = square.fromY; j <= square.toY; j++) {
+          if (store.fields[ship.owner][j][i] === 1) return false
+        }
+      }
+      return true
+    },
+    createShipSquare : function (ship) {
       var fromX, toX, fromY, toY
+
       // Проверяем начальную позицию
 
       // Задаём начальную и конечную координаты площади занимаемую кораблём
@@ -234,17 +246,14 @@ $(function () {
         if (ship.y === 9) toY = ship.y
         else toY = ship.y + 1
       }
-
-      // Запускаем циклы и проверяем координаты площади
-      // если значение равно 1му, значит ячейка занята
-      for (var i = fromX; i <= toX; i++) {
-        for (var j = fromY; j <= toY; j++) {
-          if (store.fields[ship.owner][j][i] === 1) return false
-        }
+      return {
+        fromX : fromX,
+        fromY : fromY,
+        toX   : toX,
+        toY   : toY,
       }
-      return true
     },
-    locateShip     : function (ship) {
+    locateShip       : function (ship) {
       var field = store.fields[ship.owner]
       // Записываем координаты корабля в поле владельца( owner)
       for (var i = 0; i < ship.len; i++) {
