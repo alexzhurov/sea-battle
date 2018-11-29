@@ -34,23 +34,25 @@ $(function () {
   */////////////////////////////////////////////
   var view = {
     showPlayer  : function () {
-      // Get players names
+      // Получить имена игроков из инпутов
       store.userName = $('#user_name_input').val()
       store.computerName = $('#enemy_name_input').val()
     },
     showStep    : function (owner) {
+      // Отобразить описание ходов битвы
       var ownerName
-      // Render step info
       $('#step_number').html('Ход - ' + store.step.number)
       $('#step_owner').html('Ходит - ' + store[owner + 'Name'])
 
       store.step.number++
     },
     startFight  : function () {
+      // Переключить на экран с полями битвы
       $('#screen_start').toggleClass('hidden')
       $('#screen_combat').toggleClass('hidden')
     },
     finishFight : function () {
+      // Переключить на экран победителя
       $('#screen_combat').addClass('hidden')
       $('#finish_combat').removeClass('hidden')
       $('#result').html('Победитель - ' + store.result.winner)
@@ -66,7 +68,8 @@ $(function () {
           var captionX  = '',
               captionY  = '',
               cellState = ''
-          // Добавить подписи для осей
+          // Добавить подписи для осей в .battlefield-cell-content
+          // в первую ячеку по х и по y
           if (i === 0) captionX = '<div class="marker marker__col">' + store.caption.axisX[j] + '</div>'
           if (j === 0) captionY = '<div class="marker marker__row">' + store.caption.axisY[i] + '</div>'
           // если 0 - пустая ячейка
@@ -88,7 +91,7 @@ $(function () {
               break
           }
 
-          // Отрендерить строку
+          // Отрендерить строку поля боя
           row += '<td class="battlefield-cell ' + cellState + '">' +
             '<div class="battlefield-cell-content" data-y="' + i + '" data-x="' + j + '">' +
             captionX +
@@ -106,24 +109,31 @@ $(function () {
   //// Model
   */////////////////////////////////////////////
   var model = {
-    created : function () {
+    created        : function () {
+      // Запускается при инициализации приложения
+
+      // Добавить выстрел при клике по полю врага
       $('#computer_field > tbody').on('click', function (e) {
         model.shot(e, 'user')
       })
-
+      // создать пустые данные для полей
       model.createField('user')
       model.createField('computer')
-
+      // создать флот для каждого игрока
       model.createNavy('user')
       model.createNavy('computer')
-
+      //  Вывести на экран поля из данных
       view.renderField('user')
       view.renderField('computer')
     },
-
     shot           : function (e, owner) {
+      // Задать в чьё поле будет выстрел
       var targetName = (owner === 'user') ? 'computer' : 'user'
 
+      // Задать координаты выстрела
+      // если стреляет игрок
+      // взять координаты из cell data-y и data-x
+      // если копьютер - сгенерировать случайные числа
       var target
       if (owner === 'user') {
         target = $(e.target).data()
@@ -136,7 +146,7 @@ $(function () {
       }
 
       var fieldCell = store.fields[targetName][target.y][target.x]
-
+      // Проверить ячейку куда стреляют
       switch (fieldCell) {
         case 0: // Пустая ячейка
           fieldCell = 3
@@ -152,16 +162,19 @@ $(function () {
           if (owner !== 'user') model.shot(null, 'computer')
           return
       }
-
+      // Занести результат в поле
       store.fields[targetName][target.y][target.x] = fieldCell
+      // Если попал в корабль
+      // то проверить жив ли он
+      // если мертв то закрасить ближайшие клетки
+      if (fieldCell === 1) model.hideDrownShip(target, owner, targetName)
       view.renderField(targetName)
-      if (owner === 'user') {
-        model.shot(null, 'computer')
-      }
+
+      // Произвести ход соперника
+      if (owner === 'user') model.shot(null, 'computer')
 
       view.showStep(targetName)
       model.checkResult()
-      console.log('store: ', store)
 
     },
     createShip     : function (len, owner) {
@@ -183,7 +196,6 @@ $(function () {
       // нет ли в полученных координатах или соседних клетках ранее
       // созданных кораблей
       var isValid = this.checkShipCoord(ship)
-
       // Если координаты повторяются, снова запускаем функцию
       if (!isValid) return this.createShip(len, owner)
       this.locateShip(ship)
