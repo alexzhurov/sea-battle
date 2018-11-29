@@ -351,10 +351,10 @@ $(function () {
     },
     checkResult   : function () {
       if (store.result.user === 0) {
-        store.result.winner = store.userName
+        store.result.winner = store.computerName
         view.finishFight()
       } else if (store.result.computer === 0) {
-        store.result.winner = store.computerName
+        store.result.winner = store.userName
         view.finishFight()
       }
     },
