@@ -7,24 +7,29 @@ $(function () {
   var store = {
     userName     : null,
     computerName : null,
-    step         : {
+    step    : {
       number : 1,
     },
-    fields       : {
+    fields  : {
       user     : null,
       computer : null,
     },
-    series       : [ // Стандартный набор кораблей
+    series  : [ // Стандартный набор кораблей
       { len : 4, amount : 1 },
       { len : 3, amount : 2 },
       { len : 2, amount : 3 },
       { len : 1, amount : 4 },
     ],
-    caption      : {
+    caption : {
       // axisX : ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж', 'З', 'И', 'К'],
       // axisY : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10],
       axisX : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
       axisY : [0, 1, 2, 3, 4, 5, 6, 7, 8, 9],
+    },
+    result  : {
+      user     : null,
+      computer : null,
+      winner   : null,
     },
   }
 
@@ -48,6 +53,11 @@ $(function () {
     startFight  : function () {
       $('#screen_start').toggleClass('hidden')
       $('#screen_combat').toggleClass('hidden')
+    },
+    finishFight : function () {
+      $('#screen_combat').addClass('hidden')
+      $('#finish_combat').removeClass('hidden')
+      $('#result').html('Победитель - ' + store.result.winner)
     },
     renderField : function (owner) {
       var table = $('#' + owner + '_field > tbody')
@@ -103,7 +113,6 @@ $(function () {
     created : function () {
       $('#computer_field > tbody').on('click', function (e) {
         model.shot(e, 'user')
-        model.shot(null, 'computer')
       })
 
       model.createField('user')
@@ -116,8 +125,8 @@ $(function () {
       view.renderField('computer')
     },
 
-    shot           : function (e, owner) {
-      var targetField = (owner === 'user') ? 'computer' : 'user'
+    shot        : function (e, owner) {
+      var targetName = (owner === 'user') ? 'computer' : 'user'
 
       var target
       if (owner === 'user') {
@@ -130,7 +139,7 @@ $(function () {
         }
       }
 
-      var fieldCell = store.fields[targetField][target.y][target.x]
+      var fieldCell = store.fields[targetName][target.y][target.x]
 
       switch (fieldCell) {
         case 0: // Пустая ячейка
@@ -138,6 +147,7 @@ $(function () {
           break
         case 1: // Есть корабль
           fieldCell = 2
+          store.result[targetName]--
           break
         case 2: // Корабль подстрелен
         case 3: // Пустая простреленная
@@ -147,12 +157,18 @@ $(function () {
           return
       }
 
-      store.fields[targetField][target.y][target.x] = fieldCell
-      view.renderField(targetField)
+      store.fields[targetName][target.y][target.x] = fieldCell
+      view.renderField(targetName)
+      if (owner === 'user') {
+        model.shot(null, 'computer')
+      }
 
-      view.showStep(targetField)
+      view.showStep(targetName)
+      model.checkResult()
+      console.log('store: ', store)
+
     },
-    createShip     : function (len, owner) {
+    createShip  : function (len, owner) {
       var ship = {}
 
       ship.owner = owner
@@ -232,7 +248,7 @@ $(function () {
       }
       store.fields[ship.owner] = field
     },
-    createNavy     : function (owner) {
+    createNavy  : function (owner) {
       for (var i = 0; i < store.series.length; i++) {
         var serie = store.series[i]
         for (var j = 0; j < serie.amount; j++) {
@@ -243,7 +259,7 @@ $(function () {
         }
       }
     },
-    createField    : function (owner) {
+    createField : function (owner) {
       var x = 10, y = 10, arr = [10]
       for (var i = 0; i < x; i++) {
         arr[i] = [10]
@@ -252,6 +268,15 @@ $(function () {
         }
       }
       store.fields[owner] = arr
+    },
+    checkResult : function () {
+      if (store.result.user === 0) {
+        store.result.winner = store.userName
+        view.finishFight()
+      } else if (store.result.computer === 0) {
+        store.result.winner = store.computerName
+        view.finishFight()
+      }
     },
   }
   /*////////////////////////////////////////////
