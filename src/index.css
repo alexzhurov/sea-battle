@@ -1,0 +1,123 @@
+/*//////////////////////////////
+// Main styles
+//////////////////////////////*/
+body {
+  background : #ffffff;
+}
+
+.text-center {
+  text-align : center;
+}
+
+.wrapper {
+  min-width : 990px;
+  max-width : 1080px;
+  position  : relative;
+  margin    : 0 auto;
+}
+
+.hidden {
+  display : none !important;
+}
+
+.active {
+  display : block !important;
+}
+
+/*// start_screen*/
+.form-centered {
+  display : table;
+  height  : 100vh;
+  width   : 100%;
+}
+
+.form-centered > form {
+  display        : table-cell;
+  text-align     : center;
+  vertical-align : middle;
+}
+
+.form-centered > form .btn-block {
+  margin : 25px 0;
+}
+
+/*//////////////////////////////
+// description
+//////////////////////////////*/
+.description > div {
+  width      : 49%;
+  display    : inline-block;
+  text-align : center;
+}
+
+/*//////////////////////////////
+// battlefield
+//////////////////////////////*/
+
+.battlefield-gap {
+  display    : inline-block;
+  position   : relative;
+  margin     : 40px 0;
+  width      : 49%;
+  text-align : center;
+}
+
+.battlefield-table {
+  margin          : 0;
+  border-collapse : collapse;
+  cursor          : default;
+  display         : inline-block;
+  position        : relative;
+}
+
+.battlefield-cell {
+  border  : 2px solid #ababb4;
+  padding : 0;
+}
+
+.battlefield-cell-content {
+  position   : relative;
+  height     : 2em;
+  width      : 2em;
+  box-sizing : border-box;
+}
+
+/*// попадение в пусту ячейку*/
+.battlefield-row .battlefield-cell.hit:not(.deck) .battlefield-cell-content {
+  background-color : #6193ff;
+  opacity          : 0.7;
+}
+
+/*// попадение в карму*/
+.battlefield-cell.deck.hit .battlefield-cell-content {
+  border           : 2px solid #000000;
+  background-color : #ff2a19;
+}
+
+/*// карма корабля*/
+.battlefield-cell.deck .battlefield-cell-content {
+  border : 2px solid #000000;
+}
+
+/*// marker*/
+.marker {
+  position  : absolute;
+  font-size : 11px;
+  z-index   : -1;
+}
+
+.marker.marker__row {
+  left       : -3em;
+  width      : 2em;
+  text-align : right;
+  top        : 1em;
+  height     : 1em;
+}
+
+.marker.marker__col {
+  top        : -2em;
+  left       : 0;
+  width      : 100%;
+  text-align : center;
+}
+
